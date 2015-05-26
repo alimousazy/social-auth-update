@@ -1,39 +1,22 @@
 ## Social Feed
 
-This is a aggregated Social Feed app for consumer Facebook, Google, and Twitter in a single Timeline.
+This is a aggregated Social Feed app for consumer Facebook (read time).
 
-Note
 
-I was really sick during the last week and I was not able to complete this assigment, I tried my best of finish part of it.
-
-Time spent: `<Number of hours spent>`
+Time spent: `3 hour
 
 ### Features
 
 #### Required
 
-- [x] User can sign in and connect to Facebook, Google and Twitter using `passport` (just facebook integration)
-- [x] User can view the last 20 posts on their aggregated timeline
-- [x] The current signed in user will be persisted across server restarts
-- [x] In the home timeline, user can view posts with the user profile picture, username, content, origin social network and timestamp.
-- [x] In the timeline, user can like and unlike posts.
-- [ ] User can click share in the timeline, and share with a custom message on a separate page.
-- [x] User can click reply in the timeline, and submit a reply on a separate page.
-- [x] User can click compose anywhere, and submit a new post on a separate page.
-- [ ] When composing, user can select to which networks to post.
+- [x] The feed should update in realtime without a page refresh using socket.io 
+- [x] Posts should be cached to minimize social network API requests 
+- [x] Models should be loaded on the client using browserify and used for client-side validation
+- [x] Clients should support client-side rendering 
+- [x] Clients should support client-side rendering 
+- [ ] Social network API requests should only load the posts since the lastest cached post (Not avaliable for facebook )
 
 
-### Optional
-
-- [ ] User can click a post and view it on a separate page with controls to share, like, and reply.
-- [ ] User should be able to unshare their posts.
-- [ ] User should be able to delete their posts.
-- [ ] Replies should be prefixed with the username and link to the conversation thread.
-- [ ] User can click a "Next" button at the bottom to load more 
-
-### Walkthrough
-
-![Video Walkthrough](...)
 
 
 
