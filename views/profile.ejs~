@@ -1,0 +1,57 @@
+<!doctype html>
+<html>
+<head>
+    <title>Social Authenticator</title>
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css">
+    <style>
+        body         { padding-top:80px; word-wrap:break-word; }
+    </style>
+</head>
+<body>
+<div class="container">
+
+    <div class="page-header text-center">
+        <h1><span class="fa fa-home"></span> Profile</h1>
+        <a href="/compose" class="btn btn-default btn-sm">
+            <i class="fa fa-pencil-square-o"></i>&nbsp;&nbsp;&nbsp;Compose
+        </a>
+        <a href="/timeline" class="btn btn-default btn-sm">Timeline</a>
+        <a href="/logout" class="btn btn-default btn-sm">Logout</a><br><br>
+    </div>
+
+    <% if (message.length > 0) { %>
+        <h1>WTF</h1>
+        <div class="alert alert-danger"><%= message %></div>
+    <% } %>
+
+
+    <div class="row">
+
+        <!-- FACEBOOK INFORMATION -->
+        <div class="col-sm-6">
+            <div class="well">
+                <h3 class="text-primary"><span class="fa fa-facebook"></span> Facebook</h3>
+
+                <!-- check if the user has this token (is the user authenticated with this social account) -->
+                <% if (user.facebook.id) { %>
+                    <p>
+                        <strong>id</strong>: <%= user.facebook.id %><br>
+                        <strong>name</strong>: <%= user.facebook.name %><br>
+                        <strong>link</strong>: <%= user.facebook.link %><br>
+                    </p>
+
+                <% } else { %>
+                    <a href="/connect/facebook" class="btn btn-primary">Connect Facebook</a>
+                <% } %>
+
+            </div>
+        </div>
+
+
+    </div>
+
+</div>
+<script src="/js/bundle.js" /></script>
+</body>
+</html>

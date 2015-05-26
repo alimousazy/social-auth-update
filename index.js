@@ -1,0 +1,72 @@
+let path = require('path')
+let express = require('express')
+let morgan = require('morgan')
+let cookieParser = require('cookie-parser')
+let bodyParser = require('body-parser')
+let session = require('express-session')
+let MongoStore = require('connect-mongo')(session)
+let mongoose = require('mongoose')
+let requireDir = require('require-dir')
+let flash = require('connect-flash')
+
+let passportMiddleware = require('./app/middlewares/passport')
+
+const NODE_ENV = process.env.NODE_ENV || 'development';
+console.log(NODE_ENV);
+
+let app = express(),
+  config = requireDir('./config', {recurse: true}),
+  port = process.env.PORT || 8000
+let server = require('http').Server(app);
+let io = require('socket.io')(server);
+let browserify = require('browserify-middleware');
+
+passportMiddleware.configure(config.auth[NODE_ENV])
+app.passport = passportMiddleware.passport
+
+// connect to the database
+mongoose.connect(config.database[NODE_ENV].url)
+
+// set up our express middleware
+app.get('/js/bundle.js', browserify('./js/client.js'));
+app.use(morgan('dev')) // log every request to the console
+app.use(cookieParser('ilovethenodejs')) // read cookies (needed for auth)
+app.use(bodyParser.json()) // get information from html forms
+app.use(bodyParser.urlencoded({ extended: true }))
+
+app.set('views', path.join(__dirname, 'views'))
+app.set('view engine', 'ejs') // set up ejs for templating
+let sessionMiddleware = session({
+  secret: 'ilovethenodejs',
+  store: new MongoStore({db: 'social-feeder'}),
+  resave: true,
+  saveUninitialized: true
+})
+// required for passport
+app.use(sessionMiddleware);
+
+// Setup passport authentication middleware
+app.use(app.passport.initialize())
+// persistent login sessions
+app.use(app.passport.session())
+// Flash messages stored in session
+app.use(flash())
+io.use(function(socket, next) {
+        sessionMiddleware(socket.request, socket.request.res, next);
+});
+
+io.on('connection',  function (socket) {
+    let graph = require('fbgraph');
+    graph.setAccessToken(socket.request.session.passport.user.accessToken);
+    let send_info =  function ()  {   
+        graph.get("me/home", function(err, response) {
+          socket.emit('feed',  response.data);
+        });
+    };
+    setInterval(send_info, 60000);
+});
+// configure routes
+require('./app/routes')(app)
+
+// start server
+server.listen(port, ()=> console.log(`Listening @ http://127.0.0.1:${port}`))
